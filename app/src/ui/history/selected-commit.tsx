@@ -28,13 +28,14 @@ import { showContextualMenu } from '../main-process-proxy'
 import { CommitSummary } from './commit-summary'
 import { FileList } from './file-list'
 import { SeamlessDiffSwitcher } from '../diff/seamless-diff-switcher'
+import { IChangedFiles } from '../../lib/git'
 
 interface ISelectedCommitProps {
   readonly repository: Repository
   readonly dispatcher: Dispatcher
   readonly emoji: Map<string, string>
   readonly selectedCommit: Commit | null
-  readonly changedFiles: ReadonlyArray<CommittedFileChange>
+  readonly changedFiles: IChangedFiles
   readonly selectedFile: CommittedFileChange | null
   readonly currentDiff: IDiff | null
   readonly commitSummaryWidth: number
@@ -132,7 +133,7 @@ export class SelectedCommit extends React.Component<
     if (file == null) {
       // don't show both 'empty' messages
       const message =
-        this.props.changedFiles.length === 0 ? '' : 'No file selected'
+        this.props.changedFiles.files.length === 0 ? '' : 'No file selected'
 
       return (
         <div className="panel blankslate" id="diff">
@@ -210,7 +211,7 @@ export class SelectedCommit extends React.Component<
   }
 
   private renderFileList() {
-    const files = this.props.changedFiles
+    const files = this.props.changedFiles.files
     if (files.length === 0) {
       return <div className="fill-window">No files in commit</div>
     }
